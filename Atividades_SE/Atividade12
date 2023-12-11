@@ -1,45 +1,46 @@
-sbit LCD_RS at RB4_bit;
-sbit LCD_EN at RB5_bit;
-sbit LCD_D4 at RB0_bit;
-sbit LCD_D5 at RB1_bit;
-sbit LCD_D6 at RB2_bit;
-sbit LCD_D7 at RB3_bit;
-
-sbit LCD_RS_Direction at TRISB4_bit;
-sbit LCD_EN_Direction at TRISB5_bit;
-sbit LCD_D4_Direction at TRISB0_bit;
-sbit LCD_D5_Direction at TRISB1_bit;
-sbit LCD_D6_Direction at TRISB2_bit;
-sbit LCD_D7_Direction at TRISB3_bit;
+sbit LCD_RS at RE2_bit;
+sbit LCD_EN at RE1_bit;
+sbit LCD_D7 at RD7_bit;
+sbit LCD_D6 at RD6_bit;
+sbit LCD_D5 at RD5_bit;
+sbit LCD_D4 at RD4_bit;
+sbit LCD_RS_Direction at TRISE2_bit;
+sbit LCD_EN_Direction at TRISE1_bit;
+sbit LCD_D7_Direction at TRISD7_bit;
+sbit LCD_D6_Direction at TRISD6_bit;
+sbit LCD_D5_Direction at TRISD5_bit;
+sbit LCD_D4_Direction at TRISD4_bit;
 
 unsigned int velocidade = 0;
 
 void main(){
-    TRISB0_bit = 1; 
-    TRISB1_bit = 1;
+    char lcd[4];
+    
+    TRISB.RB0 = 1;
+    TRISB.RB1 = 1;
 
     PWM1_Init(5000);
-    PWM1_Start();    
+    PWM1_Start();
 
     Lcd_Init();
 
     while (1){
-        if(Button(&PORTB, 0, 150, 1)){  
-            if (velocidade > 0){
-                velocidade -= 10;  
-                PWM1_Set_Duty(velocidade); 
+        if(Button(&PORTB, 0, 150, 0)){
+            if(velocidade > 0){
+                velocidade -= 10;
+                PWM1_Set_Duty(velocidade);
+                Lcd_Cmd(_LCD_CLEAR);
             }
         }
 
-        if(Button(&PORTB, 1, 150, 1)){ 
-           
+        if(Button(&PORTB, 1, 150, 0)){
             if(velocidade < 100){
-                velocidade += 10; 
-                PWM1_Set_Duty(velocidade); 
+                velocidade += 10;
+                PWM1_Set_Duty(velocidade);
+                Lcd_Cmd(_LCD_CLEAR);
             }
         }
-
-        Lcd_Chr(2, 12, velocidade);
-        Lcd_Chr(2, 13, '%');
+        ByteToSTR(velocidade,lcd);
+        lcd_out(1, 1, velocidade);
     }
 }
