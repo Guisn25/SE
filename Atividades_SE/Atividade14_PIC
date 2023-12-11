@@ -1,0 +1,20 @@
+void main(){
+  char Dado[16]; 
+
+  UART1_Init(9600);
+  
+  Lcd_Init();
+  
+  while(1){
+    if (UART1_Data_Ready()) {
+      UART1_Read_Text(Dado, "\n", 16);
+
+      Lcd_Cmd(_LCD_CLEAR);
+      Lcd_Out(2, 1, Dado);
+      
+      //fazer média depois
+    }
+    
+    Delay_ms(1000);
+  }
+}
